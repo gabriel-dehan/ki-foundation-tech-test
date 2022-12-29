@@ -1,6 +1,5 @@
 import { Entity, Column, ManyToOne, RelationId } from 'typeorm';
 import { Base } from 'src/entities/base.model';
-import { User } from 'src/entities/user.model';
 import { BankAccount } from 'src/entities/bank-account.model';
 
 enum TransactionType {
@@ -41,9 +40,8 @@ export class Transaction extends Base {
   @RelationId((self: Transaction) => self.bankAccount)
   readonly bankAccountId: BankAccount['id'];
 
-  @ManyToOne(() => User, (target) => target.bankAccounts, {
+  @ManyToOne(() => BankAccount, (target) => target.transactions, {
     nullable: false,
-    onDelete: 'RESTRICT',
   })
   bankAccount: BankAccount;
 
@@ -68,4 +66,6 @@ export class Transaction extends Base {
     default: TransactionStatus.PENDING,
   })
   status: TransactionStatus;
+
+  // Note: We don't add a cashback relation here because a transaction should remain agnostic as much as possible
 }

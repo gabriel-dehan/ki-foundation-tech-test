@@ -10,7 +10,6 @@ export class BankAccount extends Base {
 
   @ManyToOne(() => User, (target) => target.bankAccounts, {
     nullable: false,
-    onDelete: 'RESTRICT',
   })
   user: User;
 

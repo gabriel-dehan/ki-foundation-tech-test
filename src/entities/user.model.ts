@@ -1,6 +1,7 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 import { Base } from 'src/entities/base.model';
 import { BankAccount } from 'src/entities/bank-account.model';
+import { IsEmail } from 'class-validator';
 
 export enum UserRole {
   ADMIN = 'ADMIN',
