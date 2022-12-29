@@ -1,0 +1,19 @@
+FROM node:16.15.1 as build
+
+WORKDIR /usr/src/app
+
+COPY ./package.json ./
+COPY ./yarn.lock ./
+
+RUN yarn install
+
+COPY . ./
+
+RUN yarn build
+
+ENV NODE_ENV development
+ENV PORT 3000
+
+CMD ["yarn", "dev"]
+
+EXPOSE 3000

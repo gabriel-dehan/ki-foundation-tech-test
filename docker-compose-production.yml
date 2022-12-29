@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+  api:
+    container_name: ki-rest-api
+    build:
+      context: .
+      dockerfile: ./dockerfile.production
+    ports:
+      - 80:3000
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    environment:
+      PORT: 80
+      DATABASE_URL: postgresql://kifoundation:kifoundation@localhost:5432/kifoundation_tech_test?schema=kifoundation_tech_test
+  postgres:
+    container_name: ki-postgres
+    image: postgres:13
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: kifoundation
+      POSTGRES_PASSWORD: kifoundation
+      POSTGRES_DB: kifoundation_tech_test
+
+volumes:
+  postgres:
+    name: database
