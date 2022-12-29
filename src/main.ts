@@ -7,10 +7,17 @@ import Koa from 'koa';
 import { useContainer, useKoaServer } from 'routing-controllers';
 import { getConfig } from 'src/utils/config';
 import { Container } from 'typedi';
+import database from 'config/data-source';
 
 dotenv.config();
 
 async function bootstrap() {
+  try {
+    await database.initialize();
+  } catch (e) {
+    console.error('Error during Data Source initialization', e);
+  }
+
   const config = getConfig();
   const koa: Koa = new Koa();
 

@@ -2,7 +2,7 @@
 
 - [Ki Foundation tech test](#ki-foundation-tech-test)
   - [Run](#run)
-    - [Migrations](#migrations)
+  - [Testing requests](#testing-requests)
   - [Setup](#setup)
     - [Dependencies](#dependencies)
     - [Docker](#docker)
@@ -10,6 +10,7 @@
       - [Database](#database)
       - [Create Database Schema](#create-database-schema)
     - [Init DB](#init-db)
+    - [Migrations](#migrations)
   - [Database schema](#database-schema)
   - [TODO](#todo)
 
@@ -19,14 +20,14 @@
 $ yarn dev
 ```
 
-### Migrations
+(Or just run the docker-compose like indicated in the setup below if you want to use docker)
 
-```
-$ yarn typeorm migration:generate src/migrations/NameOfYourMig
-$ yarn typeorm migration:create src/migrations/NameOfYourMig
-$ yarn typeorm migration:run
-$ yarn typeorm migration:revert
-```
+## Testing requests
+
+Use Insomnia or Postman.
+For authenticated requests (marked with the `@Authorized` decorator) we use JWT and you need to pass a JWT token with your request.
+You can generate one using jwt.io or an Insomnia or Postman plugin.
+The `sub` of your JWT must contain the user ID you wish to use (you can create an user in Postico or your favorite postgresql client).
 
 ## Setup
 
@@ -90,6 +91,22 @@ or
 
 ```
 docker-compose -f docker-compose-dev.yml exec yarn dev:db:init
+```
+
+### Migrations
+
+Run migrations with
+
+```
+$ yarn typeorm migration:run
+```
+
+Other noteworthy commands:
+
+```
+$ yarn typeorm migration:generate src/migrations/NameOfYourMig
+$ yarn typeorm migration:create src/migrations/NameOfYourMig
+$ yarn typeorm migration:revert
 ```
 
 ## Database schema
