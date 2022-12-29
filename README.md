@@ -2,6 +2,7 @@
 
 - [Ki Foundation tech test](#ki-foundation-tech-test)
   - [Run](#run)
+    - [Migrations](#migrations)
   - [Setup](#setup)
     - [Dependencies](#dependencies)
     - [Docker](#docker)
@@ -16,6 +17,15 @@
 
 ```
 $ yarn dev
+```
+
+### Migrations
+
+```
+$ yarn typeorm migration:generate src/migrations/NameOfYourMig
+$ yarn typeorm migration:create src/migrations/NameOfYourMig
+$ yarn typeorm migration:run
+$ yarn typeorm migration:revert
 ```
 
 ## Setup

@@ -15,9 +15,10 @@
     "dev": "export NODE_ENV=development; ts-node-dev -r tsconfig-paths/register src/main.ts",
     "dev:db": "docker compose -f docker-compose.yml up -d",
     "dev:db:init": "export NODE_ENV=development; ts-node ./cli/db/init.ts",
+    "typeorm": "ts-node -r tsconfig-paths/register -P tsconfig.json ./node_modules/typeorm/cli.js -d config/data-source.ts",
     "build": "node ./build.js",
     "start": "NODE_ENV=production; node ./dist/index.js",
-    "lint": "npm run lint:path .",
+    "lint": "yarn lint:path .",
     "lint:path": "eslint --fix --ignore-path .gitignore",
     "prettier": "prettier --write '**/*.{js,ts}'"
   },

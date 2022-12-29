@@ -12,8 +12,8 @@ const database = new DataSource({
   ssl: process.env.NODE_ENV === 'production' ? true : false,
   synchronize: process.env.NODE_ENV === 'production' ? false : true,
   logging: process.env.NODE_ENV === 'development' ? true : false,
-  entities: [path.join(__dirname, './../../src/**/*.model.ts')],
-  migrations: [path.join(__dirname, './../../src/migrations/*.ts')],
+  entities: [path.resolve(__dirname, '../src/entities/*.model.ts')],
+  migrations: [path.resolve(__dirname, '../src/migrations/*.ts')],
   subscribers: [],
 });
 
