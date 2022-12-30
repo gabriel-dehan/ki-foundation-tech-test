@@ -23,16 +23,4 @@ export class CashbackService {
       .orderBy(`cashback.createdAt`, sort || 'DESC')
       .getMany();
   }
-
-  async getCashbackTotalPerMerchant() {
-    return await this.cashbackRepository
-      .createQueryBuilder('cashback')
-      .innerJoin('cashback.merchant', 'merchant')
-      // .where('cashback.status = :status', { status: 'FULFILLED' })
-      .groupBy('merchant.id')
-      .select('merchant.id', 'id')
-      .addSelect('merchant.name', 'name')
-      .addSelect('SUM(cashback.refundedAmount)', 'totalCashbackAmount')
-      .getRawMany();
-  }
 }

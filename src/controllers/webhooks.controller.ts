@@ -5,7 +5,6 @@ import { WebhookTransactionInterface } from 'src/types/transaction.types';
 import { Service } from 'typedi';
 
 @JsonController('/webhooks')
-@Authorized()
 @Service()
 export class WebhooksController {
   constructor(private transactionsService: TransactionService) {}
