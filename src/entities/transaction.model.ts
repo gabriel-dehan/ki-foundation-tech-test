@@ -5,6 +5,7 @@ import {
   TransactionCardMetadata,
   TransactionTransferMetadata,
 } from 'src/types/transaction.types';
+import { ModelPartial } from 'src/utils/modelPartial';
 
 enum TransactionType {
   CARD = 'CARD',
@@ -17,7 +18,7 @@ type TransactionMetadata = {
   transfer?: TransactionTransferMetadata;
 };
 
-enum TransactionStatus {
+export enum TransactionStatus {
   PENDING = 'PENDING',
   FULFILLED = 'FULFILLED',
   FAILED = 'FAILED',
@@ -25,6 +26,10 @@ enum TransactionStatus {
 
 @Entity()
 export class Transaction extends Base {
+  constructor(input?: ModelPartial<Transaction>) {
+    super(input);
+  }
+
   @RelationId((self: Transaction) => self.bankAccount)
   readonly bankAccountId: BankAccount['id'];
 
@@ -44,6 +49,9 @@ export class Transaction extends Base {
 
   @Column({ type: 'integer' })
   amount: number;
+
+  @Column({ type: 'integer', default: 0 })
+  refundedAmount: number;
 
   @Column({ type: 'jsonb', default: '{}' })
   metadata?: TransactionMetadata;

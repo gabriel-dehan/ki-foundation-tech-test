@@ -1,9 +1,14 @@
 import { Entity, Column, OneToMany, RelationId, ManyToOne } from 'typeorm';
 import { Base } from 'src/entities/base.model';
 import { Merchant } from 'src/entities/merchant.model';
+import { ModelPartial } from 'src/utils/modelPartial';
 
 @Entity()
 export class Brand extends Base {
+  constructor(input?: ModelPartial<Brand>) {
+    super(input);
+  }
+
   @Column()
   name: string;
 

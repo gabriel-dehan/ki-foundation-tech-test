@@ -2,6 +2,7 @@ import { Entity, Column, OneToMany } from 'typeorm';
 import { Base } from 'src/entities/base.model';
 import { BankAccount } from 'src/entities/bank-account.model';
 import { IsEmail } from 'class-validator';
+import { ModelPartial } from 'src/utils/modelPartial';
 
 export enum UserRole {
   ADMIN = 'ADMIN',
@@ -10,10 +11,9 @@ export enum UserRole {
 
 @Entity()
 export class User extends Base {
-  // TODO: Is this necessary?
-  // constructor(input?: ModelPartial<User>) {
-  //   super(input);
-  // }
+  constructor(input?: ModelPartial<User>) {
+    super(input);
+  }
 
   @Column()
   firstName: string;

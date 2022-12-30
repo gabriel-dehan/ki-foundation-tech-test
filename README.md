@@ -115,4 +115,6 @@ $ yarn typeorm migration:revert
 
 ## TODO
 
+- Update schema image
 - Add a SessionController and allow the creation of jwt token using https://github.com/auth0/node-jsonwebtoken in exchange for a pwd
+- Use DTO for service inputs and outputs

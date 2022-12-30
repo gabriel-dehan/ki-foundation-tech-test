@@ -2,9 +2,14 @@ import { Entity, Column, ManyToOne, RelationId, OneToMany } from 'typeorm';
 import { Base } from 'src/entities/base.model';
 import { User } from 'src/entities/user.model';
 import { Transaction } from 'src/entities/transaction.model';
+import { ModelPartial } from 'src/utils/modelPartial';
 
 @Entity()
 export class BankAccount extends Base {
+  constructor(input?: ModelPartial<BankAccount>) {
+    super(input);
+  }
+
   @RelationId((self: BankAccount) => self.user)
   readonly userId: User['id'];
 
