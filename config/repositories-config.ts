@@ -29,6 +29,7 @@ export const useRepositories = (): IocAdapter => {
   Object.entries(repositories).forEach(([name, repository]) => {
     Container.set(name, repository);
   });
+  Container.set('Manager', datasource.manager);
 
   return Container;
 };

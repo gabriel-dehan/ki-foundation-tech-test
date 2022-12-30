@@ -1,20 +1,29 @@
-import { Transaction, TransactionStatus } from 'src/entities/transaction.model';
+import {
+  Transaction,
+  TransactionStatus,
+  TransactionType,
+} from 'src/entities/transaction.model';
 import { Inject, Service } from 'typedi';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { WebhookTransactionInterface } from 'src/types/transaction.types';
 import { BankAccount } from 'src/entities/bank-account.model';
 import { BadRequestError } from 'src/errors/BadRequest.error';
 import { Merchant } from 'src/entities/merchant.model';
+import { Cashback, CashbackStatus } from 'src/entities/cashback.model';
 
 @Service()
 export class TransactionService {
   constructor(
+    @Inject('Manager')
+    private manager: EntityManager,
     @Inject('Transaction')
     private transactionRepository: Repository<Transaction>,
     @Inject('BankAccount')
     private bankAccountRepository: Repository<BankAccount>,
     @Inject('Merchant')
     private merchantRepository: Repository<Merchant>,
+    @Inject('Cashback')
+    private cashbackRepository: Repository<Cashback>,
   ) {}
 
   // TODO: Using DTOs would be cleaner but so much boilerplate
@@ -23,9 +32,12 @@ export class TransactionService {
   ): Promise<{ transaction: Transaction }> {
     let bankAccount: BankAccount | null;
     let merchant: Merchant | null = null;
+    let cashback: Cashback | null = null;
+    let transactionType: TransactionType;
 
     // We check the metadata to know if it's a transfer or a card transaction
     if ('card_id' in input.meta_info) {
+      transactionType = TransactionType.CARD;
       // Get the bank account from the cardId
       bankAccount = await this.bankAccountRepository.findOne({
         where: {
@@ -41,6 +53,7 @@ export class TransactionService {
         relations: ['brand'],
       });
     } else {
+      transactionType = TransactionType.TRANSFER;
       // Get the bank account from the IBAN or BIC
       const query = input.meta_info.iban
         ? { IBAN: input.meta_info.iban }
@@ -63,6 +76,7 @@ export class TransactionService {
         : input.amount.value * 100;
 
     const transaction = new Transaction({
+      type: transactionType,
       bankAccount,
       description: `${input.type}#${input.id}`,
       // Incorrect but I don't have the necessary informations to do the matchings
@@ -70,6 +84,7 @@ export class TransactionService {
         input.status === 'OPEN'
           ? TransactionStatus.PENDING
           : TransactionStatus.FULFILLED,
+      initialAmount: amount,
       amount,
       metadata:
         'card_id' in input.meta_info
@@ -78,10 +93,25 @@ export class TransactionService {
     });
 
     if (merchant) {
-      console.log(merchant, merchant.brand);
+      const { brand } = merchant;
+      const cashbackPct = brand.cashbackAmountPercentage;
+      const refundedAmount = Math.round((amount * cashbackPct) / 100);
+
+      cashback = new Cashback({
+        transaction,
+        merchant,
+        refundedAmount,
+        status: CashbackStatus.PENDING,
+      });
+
+      transaction.amount -= cashback.refundedAmount;
     }
 
-    //await this.transactionRepository.save(transaction);
+    // Save both in the same transaction
+    await this.manager.transaction(async (manager) => {
+      await manager.save(transaction);
+      if (cashback) await manager.save(cashback);
+    });
 
     return { transaction };
   }

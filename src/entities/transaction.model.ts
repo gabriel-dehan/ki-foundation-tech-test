@@ -7,7 +7,7 @@ import {
 } from 'src/types/transaction.types';
 import { ModelPartial } from 'src/utils/modelPartial';
 
-enum TransactionType {
+export enum TransactionType {
   CARD = 'CARD',
   TRANSFER = 'TRANSFER',
   REFUND = 'REFUND',
@@ -47,11 +47,13 @@ export class Transaction extends Base {
   })
   type: TransactionType;
 
+  // Amount before cashback
+  @Column({ type: 'integer' })
+  initialAmount: number;
+
+  // Amount after cashback
   @Column({ type: 'integer' })
   amount: number;
-
-  @Column({ type: 'integer', default: 0 })
-  refundedAmount: number;
 
   @Column({ type: 'jsonb', default: '{}' })
   metadata?: TransactionMetadata;

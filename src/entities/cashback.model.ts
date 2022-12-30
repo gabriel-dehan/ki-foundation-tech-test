@@ -6,7 +6,7 @@ import { ModelPartial } from 'src/utils/modelPartial';
 
 // TODO: This is pretty much the same thing as the transaction's atm, should we remove it?
 // It makes more sense on the transaction side but in the future both could differ
-enum CashbackStatus {
+export enum CashbackStatus {
   PENDING = 'PENDING',
   FULFILLED = 'FULFILLED',
   FAILED = 'FAILED',
@@ -33,6 +33,9 @@ export class Cashback extends Base {
     nullable: false,
   })
   merchant: Merchant;
+
+  @Column({ type: 'integer' })
+  refundedAmount: number;
 
   @Column({
     type: 'enum',

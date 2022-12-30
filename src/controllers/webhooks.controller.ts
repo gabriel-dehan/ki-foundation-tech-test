@@ -10,10 +10,10 @@ import { Service } from 'typedi';
 export class WebhooksController {
   constructor(private transactionsService: TransactionService) {}
 
-  @Post()
+  @Post('/transactions')
   async handleTransaction(
     @Body() transactionData: WebhookTransactionInterface,
   ) {
-    await this.transactionsService.createFromWebhook(transactionData);
+    return await this.transactionsService.createFromWebhook(transactionData);
   }
 }
