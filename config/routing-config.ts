@@ -2,7 +2,7 @@ import * as controllers from 'src/controllers';
 import * as middlewares from 'config/routing-middlewares';
 import { RoutingControllersOptions, Action } from 'routing-controllers';
 import { getEnumValues } from 'src/utils/getEnumValues';
-import db from 'config/data-source';
+import datasource from 'config/data-source';
 import { User } from 'src/entities/user.model';
 
 export const routingConfigs: RoutingControllersOptions = {
@@ -17,7 +17,7 @@ export const routingConfigs: RoutingControllersOptions = {
     return !!action.context.state.user;
   },
   currentUserChecker: async (action: Action) => {
-    return await db
+    return await datasource
       .getRepository(User)
       .findOne({ where: { id: action.context.state.user.sub } });
   },

@@ -6,14 +6,14 @@ import * as dotenv from 'dotenv';
 import Koa from 'koa';
 import { useContainer, useKoaServer } from 'routing-controllers';
 import { getConfig } from 'src/utils/config';
-import { Container } from 'typedi';
-import database from 'config/data-source';
+import { useRepositories } from 'config/repositories-config';
+import datasource from 'config/data-source';
 
 dotenv.config();
 
 async function bootstrap() {
   try {
-    await database.initialize();
+    await datasource.initialize();
   } catch (e) {
     console.error('Error during Data Source initialization', e);
   }
@@ -22,8 +22,9 @@ async function bootstrap() {
   const koa: Koa = new Koa();
 
   useMiddlewares(koa);
-  // DI from routing-controllers & typedi
-  useContainer(Container);
+  // DI from typedi
+  const containerWithRepositories = useRepositories();
+  useContainer(containerWithRepositories);
 
   const app: Koa = useKoaServer<Koa>(koa, routingConfigs);
 

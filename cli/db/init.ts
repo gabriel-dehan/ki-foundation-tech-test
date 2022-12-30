@@ -1,25 +1,29 @@
-import connection from 'config/data-source';
-// import { seedApplication } from 'test/seeds/seed';
+import datasource from 'config/data-source';
+import { seedApplication } from 'src/seeds';
 
 (async () => {
+  if (process.env.NODE_ENV !== 'development') {
+    throw new Error('This script should only be run in development mode');
+  }
+
   process.stdout.write('Establishing connection... ');
-  connection.initialize().then(async () => {
+  datasource.initialize().then(async () => {
     process.stdout.write('\x1b[32mOK\x1b[39m\x1b[0m\n');
 
     process.stdout.write('Dropping database... ');
-    await connection.dropDatabase();
+    await datasource.dropDatabase();
     process.stdout.write('\x1b[32mOK\x1b[39m\x1b[0m\n');
 
     process.stdout.write('Running migrations... ');
-    await connection.runMigrations();
+    await datasource.runMigrations();
     process.stdout.write('\x1b[32mOK\x1b[39m\x1b[0m\n');
 
-    // process.stdout.write('Database populate... ');
-    // await seedApplication(connection);
-    // process.stdout.write('\x1b[32mOK\x1b[39m\x1b[0m\n');
+    process.stdout.write('Database populate... ');
+    await seedApplication(datasource);
+    process.stdout.write('\x1b[32mOK\x1b[39m\x1b[0m\n');
 
-    process.stdout.write('Closing setup connection... ');
-    await connection.destroy();
+    process.stdout.write('Closing setup datasource... ');
+    await datasource.destroy();
     process.stdout.write('\x1b[32mOK\x1b[39m\x1b[0m\n');
   });
 })().catch((error) => {

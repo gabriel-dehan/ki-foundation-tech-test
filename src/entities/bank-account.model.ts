@@ -13,6 +13,10 @@ export class BankAccount extends Base {
   })
   user: User;
 
+  // When receiving money from the webhook we need to be able to identify the bank account, often through the cardId
+  @Column({ nullable: true, unique: true })
+  cardId?: string;
+
   // TODO: Add validation to have either
   @Column({ nullable: true, unique: true })
   IBAN?: string;

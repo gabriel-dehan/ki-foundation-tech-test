@@ -1,6 +1,10 @@
 import { Entity, Column, ManyToOne, RelationId } from 'typeorm';
 import { Base } from 'src/entities/base.model';
 import { BankAccount } from 'src/entities/bank-account.model';
+import {
+  TransactionCardMetadata,
+  TransactionTransferMetadata,
+} from 'src/types/transaction.types';
 
 enum TransactionType {
   CARD = 'CARD',
@@ -8,25 +12,9 @@ enum TransactionType {
   REFUND = 'REFUND',
 }
 
-type CardMetadata = {
-  card_id: string;
-  merchant: {
-    id: string;
-    category_code: string;
-    country_code: string;
-    name: string;
-  };
-};
-
-type TransferMetadata = {
-  sender: {
-    name: string;
-  };
-};
-
 type TransactionMetadata = {
-  card?: CardMetadata;
-  transfer?: TransferMetadata;
+  card?: TransactionCardMetadata;
+  transfer?: TransactionTransferMetadata;
 };
 
 enum TransactionStatus {
