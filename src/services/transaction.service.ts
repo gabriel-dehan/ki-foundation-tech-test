@@ -119,7 +119,7 @@ export class TransactionService {
   async getUserTransactions(userId: User['id'], input: SortInput) {
     const { sort } = input;
 
-    const transactions = await this.transactionRepository
+    return await this.transactionRepository
       .createQueryBuilder('transaction')
       .innerJoinAndSelect('transaction.cashbacks', 'cashback')
       .innerJoin('transaction.bankAccount', 'bankAccount')
@@ -127,7 +127,5 @@ export class TransactionService {
       .where('user.id = :userId', { userId })
       .orderBy(`transaction.createdAt`, sort || 'DESC')
       .getMany();
-
-    return transactions;
   }
 }

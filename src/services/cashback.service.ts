@@ -14,7 +14,7 @@ export class CashbackService {
   async getUserCashbacks(userId: User['id'], input: SortInput) {
     const { sort } = input;
 
-    const cashbacks = await this.cashbackRepository
+    return await this.cashbackRepository
       .createQueryBuilder('cashback')
       .innerJoinAndSelect('cashback.transaction', 'transaction')
       .innerJoin('transaction.bankAccount', 'bankAccount')
@@ -22,7 +22,17 @@ export class CashbackService {
       .where('user.id = :userId', { userId })
       .orderBy(`cashback.createdAt`, sort || 'DESC')
       .getMany();
+  }
 
-    return cashbacks;
+  async getCashbackTotalPerMerchant() {
+    return await this.cashbackRepository
+      .createQueryBuilder('cashback')
+      .innerJoin('cashback.merchant', 'merchant')
+      // .where('cashback.status = :status', { status: 'FULFILLED' })
+      .groupBy('merchant.id')
+      .select('merchant.id', 'id')
+      .addSelect('merchant.name', 'name')
+      .addSelect('SUM(cashback.refundedAmount)', 'totalCashbackAmount')
+      .getRawMany();
   }
 }

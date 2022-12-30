@@ -13,8 +13,19 @@ export const routingConfigs: RoutingControllersOptions = {
   // TODO: Should probably use DTO files for validations
   validation: true,
   authorizationChecker: async (action: Action, roles: string[]) => {
-    // TODO: Authorization with roles.includes?(UserRole.ADMIN), etc...
-    return !!action.context.state.user;
+    if (action.context.state?.user?.sub) {
+      const user = await datasource
+        .getRepository(User)
+        .findOne({ where: { id: action.context.state.user.sub } });
+
+      if (!user) {
+        return false;
+      }
+
+      return roles.includes(user.role);
+    } else {
+      return false;
+    }
   },
   currentUserChecker: async (action: Action) => {
     return await datasource
