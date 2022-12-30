@@ -10,6 +10,7 @@ import { Service } from 'typedi';
 export class WebhooksController {
   constructor(private transactionsService: TransactionService) {}
 
+  // TODO: Body validation using DTOs
   @Post('/transactions')
   async handleTransaction(
     @Body() transactionData: WebhookTransactionInterface,

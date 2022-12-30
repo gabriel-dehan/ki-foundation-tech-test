@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, RelationId } from 'typeorm';
+import { Entity, Column, ManyToOne, RelationId, OneToMany } from 'typeorm';
 import { Base } from 'src/entities/base.model';
 import { BankAccount } from 'src/entities/bank-account.model';
 import {
@@ -6,6 +6,7 @@ import {
   TransactionTransferMetadata,
 } from 'src/types/transaction.types';
 import { ModelPartial } from 'src/utils/modelPartial';
+import { Cashback } from './cashback.model';
 
 export enum TransactionType {
   CARD = 'CARD',
@@ -65,5 +66,6 @@ export class Transaction extends Base {
   })
   status: TransactionStatus;
 
-  // Note: We don't add a cashback relation here because a transaction should remain agnostic as much as possible
+  @OneToMany(() => Cashback, (target) => target.transaction)
+  cashbacks: Cashback[];
 }

@@ -10,6 +10,8 @@ import { BankAccount } from 'src/entities/bank-account.model';
 import { BadRequestError } from 'src/errors/BadRequest.error';
 import { Merchant } from 'src/entities/merchant.model';
 import { Cashback, CashbackStatus } from 'src/entities/cashback.model';
+import { User } from 'src/entities/user.model';
+import { SortInput } from 'src/types/input.types';
 
 @Service()
 export class TransactionService {
@@ -22,8 +24,6 @@ export class TransactionService {
     private bankAccountRepository: Repository<BankAccount>,
     @Inject('Merchant')
     private merchantRepository: Repository<Merchant>,
-    @Inject('Cashback')
-    private cashbackRepository: Repository<Cashback>,
   ) {}
 
   // TODO: Using DTOs would be cleaner but so much boilerplate
@@ -114,5 +114,20 @@ export class TransactionService {
     });
 
     return { transaction };
+  }
+
+  async getUserTransactions(userId: User['id'], input: SortInput) {
+    const { sort } = input;
+
+    const transactions = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.cashbacks', 'cashback')
+      .innerJoin('transaction.bankAccount', 'bankAccount')
+      .innerJoin('bankAccount.user', 'user')
+      .where('user.id = :userId', { userId })
+      .orderBy(`transaction.createdAt`, sort || 'DESC')
+      .getMany();
+
+    return transactions;
   }
 }
