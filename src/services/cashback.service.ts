@@ -11,8 +11,8 @@ export class CashbackService {
     private cashbackRepository: Repository<Cashback>,
   ) {}
 
-  async getUserCashbacks(userId: User['id'], input: SortInput) {
-    const { sort } = input;
+  async getUserCashbacks(userId: User['id'], input?: SortInput) {
+    const sort = input?.sort || 'DESC';
 
     return await this.cashbackRepository
       .createQueryBuilder('cashback')
@@ -20,7 +20,7 @@ export class CashbackService {
       .innerJoin('transaction.bankAccount', 'bankAccount')
       .innerJoin('bankAccount.user', 'user')
       .where('user.id = :userId', { userId })
-      .orderBy(`cashback.createdAt`, sort || 'DESC')
+      .orderBy(`cashback.createdAt`, sort)
       .getMany();
   }
 }

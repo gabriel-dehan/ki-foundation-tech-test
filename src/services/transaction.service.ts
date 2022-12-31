@@ -128,4 +128,36 @@ export class TransactionService {
       .orderBy(`transaction.createdAt`, sort || 'DESC')
       .getMany();
   }
+
+  /* Basic idea was something like this but with merchantID being in the metadata I improvised
+  const query = transactionRepository
+    .createQueryBuilder('transactions')
+    .select('transactions.merchant_id', 'merchantId')
+    .leftJoin(Merchant, 'merchant', 'merchant.id = transactions.merchantId')
+    .where('merchant.id IS NULL')
+    .groupBy('transaction.merchantId')
+    .orderBy('COUNT(transaction.id)', 'DESC')
+    .limit(10);
+  */
+  async getTopUnlinkedMerchantIds(input?: SortInput) {
+    const sort = input?.sort || 'DESC';
+
+    // Honestly I've got no idea how to generate this in typeorm so I am just injecting a raw query
+    const joinSubQuery = `SELECT merchantId::uuid FROM json_extract_path_text("transaction"."metadata"::json, 'card', 'merchant', 'id') AS merchantId`;
+
+    return (
+      await this.transactionRepository
+        .createQueryBuilder('transaction')
+        .select(
+          `(transaction.metadata -> 'card' -> 'merchant' ->> 'id')::uuid`,
+          'merchantId',
+        )
+        .leftJoin(Merchant, 'merchant', `merchant.id IN (${joinSubQuery})`)
+        .where('merchant.id IS NULL')
+        .groupBy('"merchantId"')
+        .orderBy('COUNT(transaction.id)', sort)
+        .limit(10)
+        .getRawMany()
+    ).map((row) => row.merchantId);
+  }
 }

@@ -1,6 +1,7 @@
 import { Authorized, Body, Get, JsonController } from 'routing-controllers';
 import { UserRole } from 'src/entities/user.model';
 import { MerchantService } from 'src/services/merchant.service';
+import { TransactionService } from 'src/services/transaction.service';
 import { DateRangeInput, SortInput } from 'src/types/input.types';
 import { Service } from 'typedi';
 
@@ -8,7 +9,10 @@ import { Service } from 'typedi';
 @Authorized()
 @Service()
 export class MerchantsController {
-  constructor(private merchantService: MerchantService) {}
+  constructor(
+    private merchantService: MerchantService,
+    private transactionService: TransactionService,
+  ) {}
 
   @Get('/cashback-per-merchant')
   @Authorized(UserRole.ADMIN)
@@ -24,5 +28,11 @@ export class MerchantsController {
       startDate: new Date(input.startDate),
       endDate: new Date(input.endDate),
     });
+  }
+
+  @Get('/unlinked')
+  @Authorized(UserRole.ADMIN)
+  async getUnlinkedMerchantsIds(@Body() input?: SortInput) {
+    return await this.transactionService.getTopUnlinkedMerchantIds(input);
   }
 }
