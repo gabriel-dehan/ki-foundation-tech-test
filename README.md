@@ -121,3 +121,4 @@ $ yarn typeorm migration:revert
   - Add validation on body params using those DTOs (see: https://github.com/typestack/routing-controllers#auto-validating-action-params)
 - Add a SessionController and allow the creation of jwt token using https://github.com/auth0/node-jsonwebtoken in exchange for a pwd
 - Add tests
+- Add a swagger for documentation
