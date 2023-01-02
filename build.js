@@ -8,7 +8,7 @@ require("esbuild")
     platform: "node",
     plugins: [
       nodeExternalsPlugin({
-        dependencies: false,
+        dependencies: true,
       }),
     ],
     external: ["cors", "kcors"],

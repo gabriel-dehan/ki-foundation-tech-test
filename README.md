@@ -92,7 +92,9 @@ yarn dev:db:init
 or
 
 ```
-docker-compose -f docker-compose-dev.yml exec yarn dev:db:init
+docker exec -it <your_container_id> yarn dev:db:init
+// or
+docker-compose -f docker-compose-dev.yml run yarn dev:db:init
 ```
 
 ### Migrations

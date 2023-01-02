@@ -13,7 +13,7 @@ services:
       - .env
     environment:
       PORT: 3000
-      DATABASE_URL: postgresql://kifoundation:kifoundation@localhost:5432/kifoundation_tech_test?schema=kifoundation_tech_test
+      DATABASE_URL: postgresql://kifoundation:kifoundation@ki-postgres:5432/kifoundation_tech_test?schema=kifoundation_tech_test
   postgres:
     container_name: ki-postgres
     image: postgres:13
