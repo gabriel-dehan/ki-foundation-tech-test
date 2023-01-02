@@ -10,7 +10,6 @@ export const routingConfigs: RoutingControllersOptions = {
   middlewares: getEnumValues(middlewares),
   interceptors: [],
   routePrefix: '/api',
-  // TODO: Should probably use DTO files for validations
   validation: true,
   authorizationChecker: async (action: Action, roles: string[]) => {
     if (action.context.state?.user?.sub) {

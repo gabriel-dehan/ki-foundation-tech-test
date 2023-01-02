@@ -27,7 +27,9 @@ $ yarn dev
 Use Insomnia or Postman.
 For authenticated requests (marked with the `@Authorized` decorator) we use JWT and you need to pass a JWT token with your request.
 You can generate one using jwt.io or an Insomnia or Postman plugin.
-The `sub` of your JWT must contain the user ID you wish to use (you can create an user in Postico or your favorite postgresql client).
+The `sub` of your JWT must contain the user ID you wish to use (you can create an user in Postico or your favorite postgresql client) or just use one of the existing users if you ran the seeds.
+
+There is an existing Insomnia collection accessible in `docs/` that you can import to try requests. You'll still need to install the JWT plugin and set the `sub` to a user existing in your database.
 
 ## Setup
 
@@ -76,7 +78,7 @@ Before going any further the API expects your Postgres database to have a schema
 This is not needed on docker, the init script does it.
 
 ```sql
-CREATE SCHEMA IF NOT EXISTS foundation;
+CREATE SCHEMA IF NOT EXISTS kifoundation_tech_test;
 ```
 
 ### Init DB
@@ -116,5 +118,6 @@ $ yarn typeorm migration:revert
 ## TODO
 
 - Use DTO for service inputs and outputs
-  - Add validation on body params using those DTOs
+  - Add validation on body params using those DTOs (see: https://github.com/typestack/routing-controllers#auto-validating-action-params)
 - Add a SessionController and allow the creation of jwt token using https://github.com/auth0/node-jsonwebtoken in exchange for a pwd
+- Add tests
